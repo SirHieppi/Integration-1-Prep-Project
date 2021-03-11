@@ -6,3 +6,4 @@
 # Ignore build related stuff
 /Release
 /build
+/dist
