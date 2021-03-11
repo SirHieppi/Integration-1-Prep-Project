@@ -1,0 +1,4 @@
+# Ignore vscode temp files
+/.vs
+/.vscode
+/__pycache__
