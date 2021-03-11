@@ -1,0 +1,113 @@
+import selenium
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from getpass import getpass
+
+# URLs
+instrumentTrackerURL = "https://app.asana.com/0/1183751807247626/list"
+camstarURL = "http://ilmn-camstar/camstarportal/"
+
+def camstar(proNum, serialNum, chassisNum, cellNum, username, password):
+    # Create work order
+    print("[INFO] Creating work order.")
+    browser = visit(camstarURL)
+    
+    username = browser.find_element_by_id('UsernameTextbox').send_keys(username)
+    password = browser.find_element_by_id('PasswordTextbox').send_keys(password)
+    loginButton = browser.find_element_by_id('LoginButton')
+    
+    loginButton.click() 
+
+    while browser.current_url == camstarURL:
+        sleep(1)
+
+    print("[INFO] Successfully logged into Camstar.")
+    
+    sleep(100)
+    
+    # Link work order
+    print("[INFO] Linking work order.")
+    
+    # Collect data for cell number and time tracking
+
+# old way of retrieving cell number
+def extractDataFromAsana(username, password, serialNum):
+    print("[INFO] Retrieving cell number from Asana...")
+    
+    # Login needs email extension
+    username += "@illumina.com"
+
+    cellNum = -1
+    
+    browser = visit(instrumentTrackerURL)
+    
+    username = browser.find_element_by_name('e').send_keys(username)
+    password = browser.find_element_by_name('p').send_keys(password)
+    
+    browser.find_element_by_xpath("//form[@class='LoginEmailPasswordForm']/div[2]").click() 
+
+    while browser.current_url != instrumentTrackerURL:
+        sleep(1)
+
+    # Delay for page to load
+    sleep(2)
+
+    print("\n")
+    print("[INFO] Successfully logged into Asana.")
+    rows = browser.find_elements_by_css_selector(".SpreadsheetCustomPropertyEnumCell-spreadsheetCell")
+    # print("length of rows {}".format(len(rows)))
+
+    for row in rows:
+        # print(row.get_attribute("aria-label"))
+        if row.get_attribute("aria-label") == "Location field for {}".format(serialNum):
+            print("[INFO] Found cell number for {} from Asana instrument tracker.".format(serialNum))
+            cellNum = row.text
+            
+    browser.close()
+
+    if cellNum[-1] == -1:
+        print("[INFO] Cell number could not be found from Asana.")
+
+    return cellNum[-1]
+
+
+def getUserCredentials():
+     username = input("Enter Illumina username:")
+     password = getpass()
+     
+     return tuple((username, password))
+
+def visit(url):
+    print("[INFO] Visiting {}".format(url))
+    browser = webdriver.Chrome(executable_path=r'{}'.format(chromedriver))         
+    browser.get(url)
+    
+    return browser
+
+# def selectPrinter():
+    #     index = 0
+    #     Printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 2)
+    #     print("[Print List]")
+    #     print("Current Printer Name: " + win32print.GetDefaultPrinter())
+    #     print("[0] Close")
+    #     for Printer in Printers:   
+    #         index += 1              
+    #         print("[" + str(index) + "] " + Printer['pPrinterName'])
+
+    #     number = input("Select Printer Number: ")
+    #     if len(Printers) >= int(number) and  int(number) > 0:  
+    #         win32print.SetDefaultPrinter(Printers[int(number)-1]['pPrinterName'])
+    #     print("Setting Printer: " + win32print.GetDefaultPrinter())
+    #     return win32print.GetDefaultPrinter()
+
+def getMaterialsListPDF(self):
+    materialsListPDF = input("Enter materials list PDF file name:")
+
+    while not path.exists(materialsListPDF):
+        print("File {} does not exist.".format(materialsListPDF))
+
+        materialsListPDF = input("Enter materials list PDF file name:")
+
+    return materialsListPDF
+
+
