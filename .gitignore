@@ -8,3 +8,7 @@
 /build
 /dist
 gui.spec
+tabula-1.0.4-jar-with-dependencies.jar
+
+# Ignore custom folders
+/Test

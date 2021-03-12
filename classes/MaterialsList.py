@@ -8,18 +8,24 @@ class MaterialsList():
         self.totalNovaseqMaterials = {
             'SHIPPING BRKT, FLUIDICS MODULE, CUSTOM': 2, 
             'DUCT, TUBING': 1, 
-            'ASSY, RCA, TL, NOVASEQ': 1, 
-            'ASSY, PHANTOM BIM, TL': 1, 
+            'ASSY, RCA, TL, NOVASEQ': 2, 
+            'ASSY, PHANTOM BIM, TL': 2, 
             'BRACKET, TUBE SUPPORT': 1, 
-            'CBL,APX_MISC_H22-OM GROUNDING_FORK': 2, 
+            'CBL,APX_MISC_H22-OM GROUNDING_FORK': 2,
+            'ASSY, FLUIDICS, MODULE,V2': 1, 
             'PCA, RFID Integrated Antenna': 1, 
             'ASSEMBLY, CABLE TRACK': 1, 
-            'VIB ISOLATOR ASSY, TUNED DAMPER, REAR': 1, 
-            'VIB ISOLATOR ASSY, TUNED DAMPER, FRONT': 1, 
+            'VIB ISOLATOR ASSY, TUNED DAMPER, REAR': 2, 
+            'VIB ISOLATOR ASSY, TUNED DAMPER, FRONT': 2, 
             'MOTION CONTROLLER, C413': 1, 
+            'ASSY,COMPUTE ENGINE, NORTHSHORE,NOVASEQ': 1,
             'ASSY, OPA W/ NOZZLE': 1, 
             'ASSY, XY STAGE MODULE': 1, 
             'ASSY, CAMERA MODULE (CAM)': 1,
+            'ASSY, FOCUS TRACKING MODULE (FTM)': 1,
+            'ASSY, EMISSION OPTICS MODULE (EOM)': 1,
+            'LGM_VES': 1,
+            'ASSY, CHASSIS': 1,
             'ASSY, DUAL ACTUATION DECK 2.0': 1    
         }    
         self.proNum = ""
@@ -40,16 +46,14 @@ class MaterialsList():
         self.extractDataFromMaterialsList(materialsListPath)
     
     def getMaterialsListMsgBoxStr(self):
-        if self.missing and self.surplus:
-            return self.missingPartsStr + "\n" + self.surplusPartsStr
-
+        ret = ""
         if self.missing:
-            return self.missingPartsStr
-        
-        if self.surplus:
-            return self.surplusPartsStr
+            ret += self.missingPartsStr 
 
-        return ""
+        if self.surplus:
+            ret += "\n" + self.surplusPartsStr
+
+        return ret
     
     def createMaterialsListDict(self, materialsListPath):
         ret = {}
@@ -64,9 +68,14 @@ class MaterialsList():
                 for description in table['Description']:
                     if description != 'N/A':
                         key = description.replace('\r', ' ')
-                        ret[key] = table['Qty Required'][index]
+
+                        if key in ret:
+                            ret[key] += 1
+                        else:
+                            ret[key] = table['Qty Required'][index]
+
                         index += 1
-        
+        print(ret)
         return ret
 
     def checkMaterialsList(self, materialsListPath):
