@@ -1,12 +1,12 @@
 # Ignore vscode temp files
-/.vs
-/.vscode
-/__pycache__
+.vs/
+.vscode/
+__pycache__/
 
 # Ignore build related stuff
-/Release
-/build
-/dist
+Release/
+build/
+dist/
 gui.spec
 tabula-1.0.4-jar-with-dependencies.jar
 
