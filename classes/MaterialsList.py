@@ -34,11 +34,6 @@ class MaterialsList():
         self.materialsListPath = ""
         self.cellNum = ""
 
-        self.missingPartsStr = "Missing parts in materials list:\n"
-        self.surplusPartsStr = "Surplus parts in materials list:\n"
-        self.missing = False
-        self.surplus = False
-
     def getData(self, materialsListPath):
         if not self.checkMaterialsList(materialsListPath):
             print("Materials list not valid.")
@@ -57,6 +52,10 @@ class MaterialsList():
     
     def createMaterialsListDict(self, materialsListPath):
         ret = {}
+        self.missingPartsStr = "Missing parts in materials list:\n"
+        self.surplusPartsStr = "Surplus parts in materials list:\n"
+        self.missing = False
+        self.surplus = False
         
         tables = tabula.read_pdf(materialsListPath, pages='all')
 
