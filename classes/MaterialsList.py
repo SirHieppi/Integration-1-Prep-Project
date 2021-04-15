@@ -145,10 +145,14 @@ class MaterialsList():
         # extracting text from page  
         text = pageObj.extractText()
         
+        proNum = ""
+        serialNum = ""
+        chassisNum = ""
+        cellNum = ""
+
         # Get pro num
         after = text.partition("Prod Order #")[2]
         index = 0
-        proNum = ""
         while after[index].isdigit():
             proNum += after[index]
             index += 1
