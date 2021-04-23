@@ -57,23 +57,32 @@ class MaterialsList():
         self.missing = False
         self.surplus = False
         
-        tables = tabula.read_pdf(materialsListPath, pages='all')
+        tables = tabula.read_pdf(materialsListPath, pages='all', lattice=True)
+
+
 
         for table in tables:
             index = 0
 
-            # print(table)
+            print(table)
+
+            print("table keys:")
+
+            print(table.keys())
+
             if 'Description' in table.keys():
                 for description in table['Description']:
                     if description != 'N/A':
-                        key = description.replace('\r', ' ')
+                        key = str(description).replace('\r', ' ')
 
                         if key in ret:
                             ret[key] += 1
                         else:
-                            ret[key] = table['Qty Required'][index]
+                            if 'Qty Required' in table:
+                                ret[key] = int(table['Qty Required'][index])
 
                         index += 1
+        print('ret:')
         print(ret)
         return ret
 
