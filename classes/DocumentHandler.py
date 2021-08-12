@@ -16,7 +16,7 @@ class DocumentHandler():
 
     def createInstrumentSignPDF(self, proNum, serialNum, chassisNum, cellNum): 
         excel = win32com.client.Dispatch("Excel.Application")
-        excel.Visible = False
+        # excel.Visible = False
         wb = excel.Workbooks.Open(r'{}'.format(self.instrumentSignExcelPath))
         ws = wb.Worksheets["Input"]
         
@@ -24,7 +24,7 @@ class DocumentHandler():
         ws.Cells(3, 2).Value = proNum
         ws.Cells(4, 2).Value = serialNum
         ws.Cells(5, 2).Value = chassisNum
-        ws.Cells(6, 2).Value = cellNum
+        # ws.Cells(7, 2).Value = cellNum
         
         ws = wb.Worksheets["Template_printout"]
             

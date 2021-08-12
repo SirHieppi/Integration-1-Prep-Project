@@ -183,7 +183,7 @@ class MaterialsList():
             descriptionIndex = 0
             if 'Description' in table.keys():
                 for description in table['Description']:
-                    if description == "ASSY, CHASSIS":
+                    if "ASSY, CHASSIS" in description:
                         chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex]
                         break
                     descriptionIndex += 1

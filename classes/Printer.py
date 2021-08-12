@@ -44,7 +44,7 @@ class Printer():
     def printInstrumentSign(self, newInstrumentPDFPath):
         # If adobe acrobat reader is open then nothing will be printed
         # so adobe acrobat reader must be terminated if it exists
-        delay = 5
+        delay = 10
 
         sleep(delay)
         try:
@@ -52,12 +52,12 @@ class Printer():
         except:
             pass
         self.printDocument(newInstrumentPDFPath)
-        sleep(delay)
-        try:
-            os.system("TASKKILL /F /IM AcroRD32.exe")
-        except:
-            pass
-        sleep(delay)
+        # sleep(delay)
+        # try:
+        #     os.system("TASKKILL /F /IM AcroRD32.exe")
+        # except:
+        #     pass
+        # sleep(delay)
 
     def printDocuments(self, newInstrumentPDFPath, materialsListPath, newProDHRPDFPath, userChoice):
         # print("[1] Pro # & DHR Sign x (1)")

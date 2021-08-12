@@ -1,0 +1,1 @@
+pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' --onefile -w gui.py
