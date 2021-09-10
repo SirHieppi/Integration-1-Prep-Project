@@ -20,7 +20,7 @@ class Application(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Integration I Prep")
-        self.master.geometry("500x325")
+        self.master.geometry("600x325")
         self.materialsListPath = ""
         self.selectedPrinter = ""
         self.statusIDLEColor = "red" # "#e8d900"
@@ -55,6 +55,9 @@ class Application(tk.Frame):
         self.label_info.configure(text="File Chosen: \n" + filename)
         self.materialsListPath = filePath
 
+    def executeSAP(self):
+        pass
+
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 
                                     text = "Generate Documents",
@@ -81,17 +84,37 @@ class Application(tk.Frame):
         self.statsFrame =  ttk.Frame(self.masterFrame) # , padx=-50
         self.statsFrame.grid(row=0,column=1)
 
+        # Create label and searchbox for user serial input
+        self.serialLabel =  tk.Label(self.fileBrowserFrame, 
+                                    text = "Enter serial #:",
+                                    width = 20, # height = 4, 
+                                    fg = "black")
+        self.serialLabel.grid(row=0,column=0)
+
+        self.serial = tk.StringVar()
+        self.serialEntered = ttk.Entry(
+                                    self.fileBrowserFrame, 
+                                    width = 15, 
+                                    textvariable = self.serial)
+        self.serialEntered.grid(row = 0, column = 1)
+
+        # Create button to run SAP script
+        self.runSAPScript = ttk.Button(self.fileBrowserFrame, 
+                                text = "Run SAP Script",
+                                command = self.executeSAP) 
+        self.runSAPScript.grid(row=0,column=2)
+
         # Create a File Explorer label
         self.label_info =  tk.Label(self.fileBrowserFrame, 
                                     text = "Select materials list PDF.",
                                     width = 20, # height = 4, 
                                     fg = "red")
-        self.label_info.grid(row=0,column=0)
+        self.label_info.grid(row=1,column=0)
             
         self.button_explore = ttk.Button(self.fileBrowserFrame, 
                                 text = "Browse Files",
                                 command = self.browseFiles) 
-        self.button_explore.grid(row=1,column=0)
+        self.button_explore.grid(row=1,column=1)
 
         self.labelWidth = 35
 
