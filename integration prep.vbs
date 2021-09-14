@@ -19,7 +19,7 @@ session.findById("wnd[0]").sendVKey 0
 session.findById("wnd[0]/usr/radRB_DHR").setFocus
 session.findById("wnd[0]/usr/radRB_DHR").select
 session.findById("wnd[1]/tbar[0]/btn[0]").press
-session.findById("wnd[0]/usr/ctxtP_AUFNR").text = "20578710"
+session.findById("wnd[0]/usr/ctxtP_AUFNR").text = "20578714"
 session.findById("wnd[0]/usr/ctxtP_AUFNR").setFocus
 session.findById("wnd[0]/usr/ctxtP_AUFNR").caretPosition = 8
 session.findById("wnd[0]/tbar[1]/btn[8]").press

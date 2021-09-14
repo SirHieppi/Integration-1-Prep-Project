@@ -14,6 +14,7 @@ from tkinter import ttk
 from classes.Printer import Printer
 from  classes.DocumentHandler import DocumentHandler
 from classes.MaterialsList import MaterialsList
+from classes.SAPHandler import SAPHandler
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -28,6 +29,7 @@ class Application(tk.Frame):
         self.printer = Printer()
         self.documentHandler = DocumentHandler()
         self.materialsList = MaterialsList()
+        self.sapHandler = SAPHandler()
 
         self.proNumVar = tk.StringVar(value = "Prod #: ")
         self.serialNumVar = tk.StringVar(value = "Serial #: ")
@@ -56,7 +58,11 @@ class Application(tk.Frame):
         self.materialsListPath = filePath
 
     def executeSAP(self):
-        pass
+        proNum = self.serialEntered.get()
+
+        self.sapHandler.runSAPScript(proNum)
+
+        tk.messagebox.showinfo("Info", "SAP script ready for use.")
 
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 
@@ -100,7 +106,7 @@ class Application(tk.Frame):
 
         # Create button to run SAP script
         self.runSAPScript = ttk.Button(self.fileBrowserFrame, 
-                                text = "Run SAP Script",
+                                text = "Edit SAP Script",
                                 command = self.executeSAP) 
         self.runSAPScript.grid(row=0,column=2)
 
@@ -279,7 +285,7 @@ class Application(tk.Frame):
 
             self.proNumVar.set("Pro #: " + self.materialsList.proNum)
             self.serialNumVar.set("Serial #: " + self.materialsList.serialNum)
-            self.chassisNumVar.set("Chassis #: " + self.materialsList.chassisNum)
+            self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
             self.cellNumVar.set("Cell #: " + self.materialsList.cellNum)
 
             print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))

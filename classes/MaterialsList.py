@@ -1,5 +1,6 @@
 import tabula
 import PyPDF2
+import math
 from tabula import read_pdf
 from pathlib import Path
 
@@ -25,7 +26,7 @@ class MaterialsList():
             'ASSY, FOCUS TRACKING MODULE (FTM)': 1,
             'ASSY, EMISSION OPTICS MODULE (EOM)': 1,
             'LGM_VES': 1,
-            'ASSY, CHASSIS': 1,
+            'ASSY, CHASSIS, NOVASEQ, V1.5': 1,
             'ASSY, DUAL ACTUATION DECK 2.0': 1    
         }    
         self.proNum = ""
@@ -66,9 +67,9 @@ class MaterialsList():
 
             print(table)
 
-            print("table keys:")
+            # print("table keys:")
 
-            print(table.keys())
+            # print(table.keys())
 
             if 'Description' in table.keys():
                 for description in table['Description']:
@@ -183,8 +184,14 @@ class MaterialsList():
             descriptionIndex = 0
             if 'Description' in table.keys():
                 for description in table['Description']:
-                    if "ASSY, CHASSIS" in description:
+                    if isinstance(description, str) and "ASSY, CHASSIS," in description:
                         chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex]
+
+                        # sometimes serial number is on row below because each material is broken up into several rows in the table
+                        if math.isnan(chassisNum):
+                            # serial a row below "ASSY, CHASSIS,"
+                            chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex + 1]
+
                         break
                     descriptionIndex += 1
                     
