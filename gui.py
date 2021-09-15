@@ -1,7 +1,10 @@
 import tkinter as tk
 import tkinter.messagebox
 import sys
+import glob
+import os
 from os import path
+from pathlib import Path
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter import filedialog
@@ -15,6 +18,7 @@ from classes.Printer import Printer
 from  classes.DocumentHandler import DocumentHandler
 from classes.MaterialsList import MaterialsList
 from classes.SAPHandler import SAPHandler
+from classes.WebHandler import WebHandler
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -30,6 +34,7 @@ class Application(tk.Frame):
         self.documentHandler = DocumentHandler()
         self.materialsList = MaterialsList()
         self.sapHandler = SAPHandler()
+        self.webHandler = WebHandler()
 
         self.proNumVar = tk.StringVar(value = "Prod #: ")
         self.serialNumVar = tk.StringVar(value = "Serial #: ")
@@ -64,6 +69,18 @@ class Application(tk.Frame):
 
         tk.messagebox.showinfo("Info", "SAP script ready for use.")
 
+        self.webHandler.openSAP()
+
+        # sleep(7)
+
+        # open downloaded SAP file
+        # file_path = str(Path.home() / "Downloads/*.sap")
+
+        # files = sorted(glob.iglob(file_path), key=os.path.getctime, reverse=True)
+
+        # run most recent downloaded sap file
+        # exec(files[0])
+
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 
                                     text = "Generate Documents",
@@ -92,7 +109,7 @@ class Application(tk.Frame):
 
         # Create label and searchbox for user serial input
         self.serialLabel =  tk.Label(self.fileBrowserFrame, 
-                                    text = "Enter serial #:",
+                                    text = "Enter PRO #:",
                                     width = 20, # height = 4, 
                                     fg = "black")
         self.serialLabel.grid(row=0,column=0)
@@ -119,8 +136,8 @@ class Application(tk.Frame):
             
         self.button_explore = ttk.Button(self.fileBrowserFrame, 
                                 text = "Browse Files",
-                                command = self.browseFiles) 
-        self.button_explore.grid(row=1,column=1)
+                                command = self.browseFiles)
+        self.button_explore.grid(row=1,column=1,columnspan=2,pady=25)
 
         self.labelWidth = 35
 

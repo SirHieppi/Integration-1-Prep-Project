@@ -188,7 +188,7 @@ class MaterialsList():
                         chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex]
 
                         # sometimes serial number is on row below because each material is broken up into several rows in the table
-                        if math.isnan(chassisNum):
+                        if isinstance(chassisNum, int) and math.isnan(chassisNum):
                             # serial a row below "ASSY, CHASSIS,"
                             chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex + 1]
 
