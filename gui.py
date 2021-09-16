@@ -1,3 +1,4 @@
+import subprocess
 import tkinter as tk
 import tkinter.messagebox
 import sys
@@ -48,6 +49,8 @@ class Application(tk.Frame):
         self.checkButtons = []
 
         self.create_widgets()
+
+        self.openSAPBatchFilePath = "openSAP.bat"
   
     # Function for opening the 
     # file explorer window
@@ -71,15 +74,7 @@ class Application(tk.Frame):
 
         self.webHandler.openSAP()
 
-        # sleep(7)
-
-        # open downloaded SAP file
-        # file_path = str(Path.home() / "Downloads/*.sap")
-
-        # files = sorted(glob.iglob(file_path), key=os.path.getctime, reverse=True)
-
-        # run most recent downloaded sap file
-        # exec(files[0])
+        subprocess.call(self.openSAPBatchFilePath)
 
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 

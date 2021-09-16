@@ -16,4 +16,4 @@ templates/
 exports/*
 
 # Ignore files
-integration 1 prep.vbs
+"integration 1 prep.vbs"

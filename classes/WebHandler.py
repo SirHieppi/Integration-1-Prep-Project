@@ -16,6 +16,10 @@ class WebHandler():
         print("[INFO] Visiting {}".format(url))
         self.driver.get(url)
 
+        time.sleep(5)
+
+        self.driver.close()
+
     def openSAP(self):
         self.visit(self.sapURL)
 
