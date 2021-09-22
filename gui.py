@@ -12,7 +12,8 @@ from tkinter import filedialog
 from tkinter import ttk
 
 # Notes:
-# to build exe run command: pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' --onefile -w gui.py
+# Adding --onefile to build command breaks selenium
+# to build exe run command: pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' -w gui.py
 
 # My imports
 from classes.Printer import Printer

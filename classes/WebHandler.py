@@ -13,6 +13,7 @@ class WebHandler():
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+        
         print("[INFO] Visiting {}".format(url))
         self.driver.get(url)
 
