@@ -2,22 +2,18 @@ import subprocess
 import tkinter as tk
 import tkinter.messagebox
 import sys
-import glob
-import os
 from os import path
-from pathlib import Path
-from time import sleep
-from tkinter.filedialog import askopenfilename
 from tkinter import filedialog
 from tkinter import ttk
+from glob import glob 
 
 # Notes:
 # Adding --onefile to build command breaks selenium
-# to build exe run command: pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' -w gui.py
+# to build exe run command: pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' -w --upx-dir=./upx-3.96-win64 gui.py
 
 # My imports
 from classes.Printer import Printer
-from  classes.DocumentHandler import DocumentHandler
+from classes.DocumentHandler import DocumentHandler
 from classes.MaterialsList import MaterialsList
 from classes.SAPHandler import SAPHandler
 from classes.WebHandler import WebHandler
@@ -52,9 +48,18 @@ class Application(tk.Frame):
         self.create_widgets()
 
         self.openSAPBatchFilePath = "openSAP.bat"
+        
+
+        print(self.openSAPBatchFilePath)
+
+        # self.openSAPBatchFilePath = 'openSAP.bat'
   
     # Function for opening the 
     # file explorer window
+
+    def find_ext(self, dr, ext):
+        return glob(path.join(dr,"*.{}".format(ext)))
+
     def browseFiles(self):
         filePath = filedialog.askopenfilename(initialdir = "/",
                                             title = "Select a File",
@@ -124,16 +129,16 @@ class Application(tk.Frame):
         self.runSAPScript.grid(row=0,column=2)
 
         # Create a File Explorer label
-        self.label_info =  tk.Label(self.fileBrowserFrame, 
-                                    text = "Select materials list PDF.",
-                                    width = 20, # height = 4, 
-                                    fg = "red")
-        self.label_info.grid(row=1,column=0)
+        # self.label_info =  tk.Label(self.fileBrowserFrame, 
+        #                             text = "Select materials list PDF.",
+        #                             width = 20, # height = 4, 
+        #                             fg = "red")
+        # self.label_info.grid(row=1,column=0)
             
-        self.button_explore = ttk.Button(self.fileBrowserFrame, 
-                                text = "Browse Files",
-                                command = self.browseFiles)
-        self.button_explore.grid(row=1,column=1,columnspan=2,pady=25)
+        # self.button_explore = ttk.Button(self.fileBrowserFrame, 
+        #                         text = "Browse Files",
+        #                         command = self.browseFiles)
+        # self.button_explore.grid(row=1,column=1,columnspan=2,pady=25)
 
         self.labelWidth = 35
 
@@ -181,7 +186,7 @@ class Application(tk.Frame):
         self.button_exit.pack()
         self.pack()
 
-        self.create_printing_window()
+        # self.create_printing_window()
 
     def create_printing_window(self):
         self.printWindow = tk.Toplevel()
@@ -285,6 +290,9 @@ class Application(tk.Frame):
         self.checking = False
 
     def generateDocuments(self):
+        tempPath = path.expanduser('~/AppData/Local/Temp')
+        self.materialsListPath = self.find_ext(tempPath, "pdf")[0]
+
         if self.checkRequirements():
             self.statusLabelTextVar.set("IN PROGRESS")
             self.statusLabelText.configure(fg = "red") 
@@ -321,6 +329,8 @@ class Application(tk.Frame):
 
             tk.messagebox.showinfo("Info", "Documents ready to be printed.")
 
+            self.printUserChoices()
+
     def getUserChoices(self):
         userChoices = []
 
@@ -345,7 +355,8 @@ class Application(tk.Frame):
 
     def printUserChoices(self):
         if self.generatedDocuments:
-            choices = self.getUserChoices()
+            # choices = self.getUserChoices()
+            choices = [3]
 
             if len(choices) == 0:
                 tk.messagebox.showwarning("Warning", "Please select a document to print.")

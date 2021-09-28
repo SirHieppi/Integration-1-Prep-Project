@@ -9,6 +9,8 @@ build/
 dist/
 gui.spec
 tabula-1.0.4-jar-with-dependencies.jar
+tabula-1.0.5-jar-with-dependencies.jar
+upx-3.96-win64/
 
 # Ignore custom folders
 /Test
@@ -17,3 +19,4 @@ exports/*
 
 # Ignore files
 "integration 1 prep.vbs"
+

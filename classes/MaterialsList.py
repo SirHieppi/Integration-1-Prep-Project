@@ -1,8 +1,6 @@
 import tabula
 import PyPDF2
 import math
-from tabula import read_pdf
-from pathlib import Path
 
 class MaterialsList():
     def  __init__(self):
@@ -79,8 +77,11 @@ class MaterialsList():
                         if key in ret:
                             ret[key] += 1
                         else:
-                            if 'Qty Required' in table:
-                                ret[key] = int(table['Qty Required'][index])
+                            if 'Qty Issued' in table:
+                                if math.isnan(table['Qty Issued'][index]):
+                                    ret[key] = 0
+                                else:
+                                    ret[key] = int(table['Qty Issued'][index])
 
                         index += 1
         print('ret:')

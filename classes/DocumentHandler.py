@@ -1,9 +1,6 @@
 import win32com.client
-import win32api
 import os
 from docx import Document
-from os import path
-# from docx2pdf import convert
 
 class DocumentHandler():
     def __init__(self):

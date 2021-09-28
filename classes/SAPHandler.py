@@ -1,9 +1,15 @@
 import os
 from os import path
+from pathlib import Path
 
 class SAPHandler():
     def __init__(self):
-        self.sapScriptPath = os.getcwd() + "\\integration prep.vbs"
+        path = Path(os.getcwd())
+        pathStr = os.path.dirname(path)
+
+        self.sapScriptPath = pathStr + "\\integration prep.vbs"
+
+        print("integration prep.vbs path: " + self.sapScriptPath)
 
     def runSAPScript(self, docNum):
         self.modifySAPScript(docNum)

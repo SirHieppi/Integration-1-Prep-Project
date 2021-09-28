@@ -1,8 +1,5 @@
-import selenium
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from pathlib import Path
 from webdriver_manager.chrome import ChromeDriverManager
 
 class WebHandler():
