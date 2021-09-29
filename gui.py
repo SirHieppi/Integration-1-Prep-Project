@@ -9,7 +9,7 @@ from glob import glob
 
 # Notes:
 # Adding --onefile to build command breaks selenium
-# to build exe run command: pyinstaller --add-data 'tabula-1.0.4-jar-with-dependencies.jar;tabula' -w --upx-dir=./upx-3.96-win64 gui.py
+# to build exe run command: pyinstaller --add-data "tabula-1.0.5-jar-with-dependencies.jar;tabula" -w --upx-dir=./upx-3.96-win64 gui.py
 
 # My imports
 from classes.Printer import Printer
@@ -43,6 +43,7 @@ class Application(tk.Frame):
         self.generatedDocuments = False
         self.checking = False
         self.deselectingCheckEverything = False
+        self.proEntered = False
         self.checkButtons = []
 
         self.create_widgets()
@@ -74,17 +75,20 @@ class Application(tk.Frame):
     def executeSAP(self):
         proNum = self.serialEntered.get()
 
-        self.sapHandler.runSAPScript(proNum)
+        if proNum == "":
+            tk.messagebox.showerror("Error", "Please enter pro number.")
+        else:
+            self.sapHandler.runSAPScript(proNum)
 
-        tk.messagebox.showinfo("Info", "SAP script ready for use.")
+            tk.messagebox.showinfo("Info", "SAP script ready for use.")
 
-        self.webHandler.openSAP()
+            self.webHandler.openSAP()
 
-        subprocess.call(self.openSAPBatchFilePath)
+            subprocess.call(self.openSAPBatchFilePath)
 
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 
-                                    text = "Generate Documents",
+                                    text = "Print Documents",
                                     font="bold")
 
         self.masterFrame =  ttk.LabelFrame(self.master)
@@ -168,7 +172,7 @@ class Application(tk.Frame):
         self.label_cellNum.grid(row=3,column=0)
 
         self.button_generate_documents = ttk.Button(self.master, 
-                            text = "Generate Documents",
+                            text = "Print Documents",
                             command = self.generateDocuments,
                             style = "AccentButton") 
         # self.button_generate_documents.grid(row=0,column=2) # , padx=10
@@ -327,7 +331,7 @@ class Application(tk.Frame):
 
             self.generatedDocuments = True
 
-            tk.messagebox.showinfo("Info", "Documents ready to be printed.")
+            # tk.messagebox.showinfo("Info", "Documents ready to be printed.")
 
             self.printUserChoices()
 
@@ -356,7 +360,7 @@ class Application(tk.Frame):
     def printUserChoices(self):
         if self.generatedDocuments:
             # choices = self.getUserChoices()
-            choices = [3]
+            choices = [3,2,2]
 
             if len(choices) == 0:
                 tk.messagebox.showwarning("Warning", "Please select a document to print.")

@@ -50,7 +50,8 @@ class Printer():
         print("Old Duplex = %d" % attributes['pDevMode'].Duplex)
         #attributes['pDevMode'].Duplex = 1    # no flip
         #attributes['pDevMode'].Duplex = 2    # flip up
-        attributes['pDevMode'].Duplex = 3    # flip over
+        #attributes['pDevMode'].Duplex = 3    # flip over
+        attributes['pDevMode'].Duplex = 2
         ## 'SetPrinter' fails because of 'Access is denied.'
         ## But the attribute 'Duplex' is set correctly
         try:

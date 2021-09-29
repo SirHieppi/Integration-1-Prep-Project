@@ -75,13 +75,22 @@ class MaterialsList():
                         key = str(description).replace('\r', ' ')
 
                         if key in ret:
-                            ret[key] += 1
+                            if table['Mvt. Typ.'][index] == 261:
+                                ret[key] += 1
+                            elif table['Mvt. Typ.'][index] == 262:
+                                ret[key] -= 1
                         else:
                             if 'Qty Issued' in table:
                                 if math.isnan(table['Qty Issued'][index]):
                                     ret[key] = 0
                                 else:
-                                    ret[key] = int(table['Qty Issued'][index])
+                                    if not key in ret:
+                                        ret[key] = 0
+
+                                    if table['Mvt. Typ.'][index] == 261:
+                                        ret[key] += int(table['Qty Issued'][index])
+                                    elif table['Mvt. Typ.'][index] == 262:
+                                        ret[key] -= int(table['Qty Issued'][index])
 
                         index += 1
         print('ret:')
@@ -89,22 +98,6 @@ class MaterialsList():
         return ret
 
     def checkMaterialsList(self, materialsListPath):
-        # materialsList = {
-        #     'SHIPPING BRKT, FLUIDICS MODULE, CUSTOM': 1, 
-        #     'DUCT, TUBING': 1, 
-        #     'ASSY, RCA, TL, NOVASEQ': 5, 
-        #     'ASSY, PHANTOM BIM, TL': 1, 
-        #     'BRACKET, TUBE SUPPORT': 1, 
-        #     'CBL,APX_MISC_H22-OM GROUNDING_FORK': 1, 
-        #     'PCA, RFID Integrated Antenna': 1, 
-        #     'VIB ISOLATOR ASSY, TUNED DAMPER, REAR': 1, 
-        #     'VIB ISOLATOR ASSY, TUNED DAMPER, FRONT': 1, 
-        #     'MOTION CONTROLLER, C413': 1, 
-        #     'ASSY, OPA W/ NOZZLE': 1, 
-        #     'ASSY, XY STAGE MODULE': 1, 
-        #     'ASSY, CAMERA MODULE (CAM)': 1,
-        #     'ASSY, DUAL ACTUATION DECK 2.0': 1    
-        # } 
         materialsList = self.createMaterialsListDict(materialsListPath)
 
         print("[INFO] Checking materials list...")
