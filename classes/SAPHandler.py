@@ -7,9 +7,9 @@ class SAPHandler():
         path = Path(os.getcwd())
         pathStr = os.path.dirname(path)
 
-        self.sapScriptPath = pathStr + "\\integration prep.vbs"
+        self.sapScriptPath = pathStr + "\\SAP Script.vbs"
 
-        print("integration prep.vbs path: " + self.sapScriptPath)
+        print("SAP Script.vbs path: " + self.sapScriptPath)
 
     def runSAPScript(self, docNum):
         self.modifySAPScript(docNum)

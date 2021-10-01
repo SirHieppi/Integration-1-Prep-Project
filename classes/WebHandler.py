@@ -22,4 +22,4 @@ class WebHandler():
         self.visit(self.sapURL)
 
     def closeBrowser(self):
-        self.driver.close()
+        self.driver.quit()

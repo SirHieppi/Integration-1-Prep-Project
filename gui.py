@@ -2,6 +2,10 @@ import subprocess
 import tkinter as tk
 import tkinter.messagebox
 import sys
+import os
+import shutil
+from time import sleep
+from shutil import copyfile
 from os import path
 from tkinter import filedialog
 from tkinter import ttk
@@ -85,6 +89,8 @@ class Application(tk.Frame):
             self.webHandler.openSAP()
 
             subprocess.call(self.openSAPBatchFilePath)
+
+            self.webHandler.closeBrowser()
 
     def create_widgets(self):
         self.generateDocumentsHeader =  ttk.Label(self.master, 
@@ -294,24 +300,37 @@ class Application(tk.Frame):
         self.checking = False
 
     def generateDocuments(self):
+        self.statusLabelTextVar.set("IN PROGRESS")
+        self.statusLabelText.configure(fg = "red") 
+
+        # Copy materials list pdf from temp folder to exports folder
         tempPath = path.expanduser('~/AppData/Local/Temp')
-        self.materialsListPath = self.find_ext(tempPath, "pdf")[0]
+        materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[0]
+        materialsListPdfDstPath = os.getcwd() + "\\exports\\" + materialsListPdfSrcPath.split("\\")[-1]
 
-        if self.checkRequirements():
-            self.statusLabelTextVar.set("IN PROGRESS")
-            self.statusLabelText.configure(fg = "red") 
+        # print("src: " + src)
+        # print("dst: " + dst)
+        copyfile(materialsListPdfSrcPath, materialsListPdfDstPath)
+        self.materialsListPath = materialsListPdfDstPath
 
-            print(self.materialsListPath)
-            self.materialsList.getData(self.materialsListPath)
+        print(self.materialsListPath)
+        self.materialsList.getData(self.materialsListPath)
 
-            materialsListMsgBoxStr = self.materialsList.getMaterialsListMsgBoxStr()
-            if materialsListMsgBoxStr:
-                tk.messagebox.showwarning("Warning", materialsListMsgBoxStr)
+        print(self.materialsListPath)
+        self.materialsList.getData(self.materialsListPath)
 
-            self.proNumVar.set("Pro #: " + self.materialsList.proNum)
-            self.serialNumVar.set("Serial #: " + self.materialsList.serialNum)
-            self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
-            self.cellNumVar.set("Cell #: " + self.materialsList.cellNum)
+        materialsListMsgBoxStr = self.materialsList.getMaterialsListMsgBoxStr()
+        if materialsListMsgBoxStr:
+            tk.messagebox.showwarning("Warning", materialsListMsgBoxStr)
+
+        self.proNumVar.set("Pro #: " + self.materialsList.proNum)
+        self.serialNumVar.set("Serial #: " + self.materialsList.serialNum)
+        self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
+        self.cellNumVar.set("Cell #: " + self.materialsList.cellNum)
+
+        if self.materialsList.chassisNum == "":
+            tk.messagebox.showerror("Error", "Chassis not issued. Cannot create sign.")
+        else:
 
             print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))
             print("[INFO] Retrieved Serial Num: {} from materials list.".format(self.materialsList.serialNum))
@@ -321,7 +340,7 @@ class Application(tk.Frame):
 
             # Modify documents to print
             self.documentHandler.createInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
-                                                         self.materialsList.chassisNum, self.materialsList.cellNum)
+                                                        self.materialsList.chassisNum, self.materialsList.cellNum)
 
             self.documentHandler.createProNumAndDHR(self.materialsList.proNum, self.materialsList.serialNum)
             print("\n")
@@ -367,6 +386,7 @@ class Application(tk.Frame):
                 return
 
             for choice in choices:
+                sleep(12)
                 self.printer.printDocuments(self.documentHandler.newInstrumentPDFPath, self.materialsListPath, self.documentHandler.newProDHRPDFPath, choice)
 
             tk.messagebox.showinfo("Info", "Documents sent to printer.")

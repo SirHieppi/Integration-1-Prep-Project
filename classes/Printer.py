@@ -41,6 +41,8 @@ class Printer():
         # else:
         #     print("[INFO] Printing disabled.")
 
+        print("Printing " + filename)
+
         name = win32print.GetDefaultPrinter()
         #printdefaults = {"DesiredAccess": win32print.PRINTER_ACCESS_ADMINISTER}
         printdefaults = {"DesiredAccess": win32print.PRINTER_ACCESS_USE}
@@ -51,6 +53,8 @@ class Printer():
         #attributes['pDevMode'].Duplex = 1    # no flip
         #attributes['pDevMode'].Duplex = 2    # flip up
         #attributes['pDevMode'].Duplex = 3    # flip over
+        # attributes['pDevMode'].Color = 1
+        attributes['pDevMode'].Copies = 1
         attributes['pDevMode'].Duplex = 2
         ## 'SetPrinter' fails because of 'Access is denied.'
         ## But the attribute 'Duplex' is set correctly
@@ -66,7 +70,7 @@ class Printer():
         # so adobe acrobat reader must be terminated if it exists
         delay = 10
 
-        sleep(delay)
+        # sleep(delay)
         try:
             os.system("TASKKILL /F /IM AcroRD32.exe")
         except:
@@ -87,24 +91,24 @@ class Printer():
         # print("[5] Cancel.")
 
         if userChoice == 1:
-            print("[INFO] Printing Pro # & DHR Sign ({}) x 1.".format(newProDHRPDFPath)) 
+            # print("[INFO] Printing Pro # & DHR Sign ({}) x 1.".format(newProDHRPDFPath)) 
             self.printDocument(newProDHRPDFPath)
         elif userChoice == 2:
-            print("[INFO] Printing Instrument Sign ({}) x 1.".format(newInstrumentPDFPath))
+            # print("[INFO] Printing Instrument Sign ({}) x 1.".format(newInstrumentPDFPath))
             self.printInstrumentSign(newInstrumentPDFPath)
 
         elif userChoice == 3:
-            print("[INFO] Printing Materials list ({}) x 1.".format(materialsListPath))
+            # print("[INFO] Printing Materials list ({}) x 1.".format(materialsListPath))
             self.printDocument(materialsListPath)
         elif userChoice == 4:
-            print("[INFO] Printing Pro # & DHR Sign ({}) x 1.".format(newProDHRPDFPath)) 
+            # print("[INFO] Printing Pro # & DHR Sign ({}) x 1.".format(newProDHRPDFPath)) 
             self.printDocument(newProDHRPDFPath)
             sleep(1)
-            print("[INFO] Printing Instrument Sign ({}) x 1.".format(newInstrumentPDFPath))
+            # print("[INFO] Printing Instrument Sign ({}) x 1.".format(newInstrumentPDFPath))
 
             self.printInstrumentSign(newInstrumentPDFPath)
             
-            print("[INFO] Printing Materials list ({}) x 1.".format(materialsListPath))
+            # print("[INFO] Printing Materials list ({}) x 1.".format(materialsListPath))
             self.printDocument(materialsListPath)
         elif userChoice == 5:
             print("Exiting.")
