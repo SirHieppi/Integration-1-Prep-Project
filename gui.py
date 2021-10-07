@@ -7,7 +7,6 @@ import shutil
 from time import sleep
 from shutil import copyfile
 from os import path
-from tkinter import filedialog
 from tkinter import ttk
 from glob import glob 
 
@@ -31,6 +30,7 @@ class Application(tk.Frame):
         self.materialsListPath = ""
         self.selectedPrinter = ""
         self.statusIDLEColor = "red" # "#e8d900"
+        self.labelWidth = 35
 
         self.printer = Printer()
         self.documentHandler = DocumentHandler()
@@ -58,23 +58,9 @@ class Application(tk.Frame):
         print(self.openSAPBatchFilePath)
 
         # self.openSAPBatchFilePath = 'openSAP.bat'
-  
-    # Function for opening the 
-    # file explorer window
 
     def find_ext(self, dr, ext):
         return glob(path.join(dr,"*.{}".format(ext)))
-
-    def browseFiles(self):
-        filePath = filedialog.askopenfilename(initialdir = "/",
-                                            title = "Select a File",
-                                            filetypes = (("PDF files", "*.pdf"),("all files","*.*"),))
-        
-        # Change label contents
-        filename = filePath.split("/")[-1]
-        print(filename)
-        self.label_info.configure(text="File Chosen: \n" + filename)
-        self.materialsListPath = filePath
 
     def executeSAP(self):
         proNum = self.serialEntered.get()
@@ -101,6 +87,7 @@ class Application(tk.Frame):
         self.bottomFrame =  ttk.Frame(self.master)
         self.topFrame =  ttk.Frame(self.master)
 
+        # Status label
         self.statusLabel =  tk.Label(self.topFrame, 
                                     text = "Status: ",
                                     width = 15)
@@ -138,25 +125,10 @@ class Application(tk.Frame):
                                 command = self.executeSAP) 
         self.runSAPScript.grid(row=0,column=2)
 
-        # Create a File Explorer label
-        # self.label_info =  tk.Label(self.fileBrowserFrame, 
-        #                             text = "Select materials list PDF.",
-        #                             width = 20, # height = 4, 
-        #                             fg = "red")
-        # self.label_info.grid(row=1,column=0)
-            
-        # self.button_explore = ttk.Button(self.fileBrowserFrame, 
-        #                         text = "Browse Files",
-        #                         command = self.browseFiles)
-        # self.button_explore.grid(row=1,column=1,columnspan=2,pady=25)
-
-        self.labelWidth = 35
-
         self.label_proNum =  tk.Label(self.statsFrame, 
                                     textvariable = self.proNumVar,
                                     width = self.labelWidth, 
                                     height = 2)
-
         self.label_proNum.grid(row=0,column=0)
 
         self.label_serialNum =  tk.Label(self.statsFrame, 
@@ -196,109 +168,6 @@ class Application(tk.Frame):
         self.button_exit.pack()
         self.pack()
 
-        # self.create_printing_window()
-
-    def create_printing_window(self):
-        self.printWindow = tk.Toplevel()
-        self.printWindow.title("Integration I Prep")
-        self.printWindow.geometry("350x350")
-
-        self.create_printing_window_widgets()
-
-    def create_printing_window_widgets(self):
-        self.printingFrame =  ttk.Frame(self.printWindow)
-        # self.printingFrame.grid(row=0,column=0)
-
-        self.printOptionsFrame =  ttk.LabelFrame(self.printingFrame)
-        self.printOptionsFrame.grid(row=0,column=0)
-        
-        self.printWindowHeader =  tk.Label(self.printWindow, 
-                                    text = "Print Documents",
-                                    font="bold", # height = 4, 
-                                    ) # fg = "black")
-        # self.printWindowHeader.grid(row=0,column=0)
-
-        self.OPTIONS = self.printer.printerNames
-        self.variable = tk.StringVar(self.printingFrame)
-        self.variable.set(self.OPTIONS[0]) # default value
-
-        self.printerOptionsMenu = ttk.OptionMenu(self.printOptionsFrame, self.variable, *self.OPTIONS, command=self.selectPrinter)
-        self.printerOptionsMenu.grid(row=2, column=0)
-
-        self.label_print =  tk.Label(self.printOptionsFrame, 
-                                    text = "Select a printer and choose \nwhich documents to print.",
-                                    width = 25, # height = 4,
-                                    fg = "red")
-        # self.label_print.pack()   
-        self.label_print.grid(row=1,column=0)
-
-        self.printProAndDHRSign = tk.IntVar()
-        self.printInstrumentSign = tk.IntVar()
-        self.printMaterialsList = tk.IntVar()
-        self.printEverything = tk.IntVar()
-
-        self.C1 = ttk.Checkbutton(self.printOptionsFrame, text = "Pro # & DHR Sign x (1)", variable = self.printProAndDHRSign, \
-                        onvalue = 1, offvalue = 0,           
-                        width = 20, command = self.printCheckButtonHandler)
-        self.C1.grid(row = 4, column = 0)
-        self.C2 = ttk.Checkbutton(self.printOptionsFrame, text = "Instrument Sign x (1)", variable = self.printInstrumentSign, \
-                        onvalue = 1, offvalue = 0,           
-                        width = 20, command = self.printCheckButtonHandler)
-        self.C2.grid(row = 5, column = 0)
-        self.C3 = ttk.Checkbutton(self.printOptionsFrame, text = "Materials List x (1)", variable = self.printMaterialsList, \
-                        onvalue = 1, offvalue = 0,           
-                        width = 20, command = self.printCheckButtonHandler)
-        self.C3.grid(row = 6, column = 0)
-        self.C4 = ttk.Checkbutton(self.printOptionsFrame, text = "All Documents", variable = self.printEverything, \
-                        onvalue = 1, offvalue = 0,           
-                        width = 20, command = self.printEverythingCheckButtonHandler)
-        self.C4.grid(row = 3, column = 0)
-
-        self.checkButtons.append(self.C1)
-        self.checkButtons.append(self.C2)
-        self.checkButtons.append(self.C3)
-        self.checkButtons.append(self.C4)
-
-        #\ height=1, for each one
-        self.print_window_button_print = ttk.Button(self.printWindow, 
-                            text = "Print",
-                            command = self.printUserChoices,
-                            style="AccentButton") 
-
-        self.print_window_button_exit = ttk.Button(self.printWindow, 
-                            text = "Exit",
-                            command = sys.exit) 
-
-        self.printWindowHeader.pack()
-        self.printingFrame.pack()
-        self.printOptionsFrame.pack()
-        # self.C4.pack()
-        # self.C1.pack()
-        # self.C2.pack()
-        # self.C3.pack()
-        self.print_window_button_print.pack(pady=20)
-        self.print_window_button_exit.pack()
-        # self.pack()
-    
-    def printCheckButtonHandler(self):
-        # If print everything checkbox is checked any other checkbox
-        # is unchecked then uncheck the print all checkbox
-        if self.checkButtons[3].instate(['selected']) == True and not self.checking:
-            self.deselectingCheckEverything = True
-            self.checkButtons[3].invoke()
-            self.deselectingCheckEverything = False
-
-    def printEverythingCheckButtonHandler(self):
-        self.checking = True
-        if self.checkButtons[3].instate(['selected']) == True:
-            for i in range(3):
-                if self.checkButtons[i].instate(['selected']) == False:
-                    self.checkButtons[i].invoke()
-        elif not self.deselectingCheckEverything:
-            for i in range(3):
-                self.checkButtons[i].invoke()
-        self.checking = False
-
     def generateDocuments(self):
         self.statusLabelTextVar.set("IN PROGRESS")
         self.statusLabelText.configure(fg = "red") 
@@ -312,9 +181,6 @@ class Application(tk.Frame):
         # print("dst: " + dst)
         copyfile(materialsListPdfSrcPath, materialsListPdfDstPath)
         self.materialsListPath = materialsListPdfDstPath
-
-        print(self.materialsListPath)
-        self.materialsList.getData(self.materialsListPath)
 
         print(self.materialsListPath)
         self.materialsList.getData(self.materialsListPath)
@@ -339,10 +205,10 @@ class Application(tk.Frame):
             print("\n")
 
             # Modify documents to print
-            self.documentHandler.createInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
+            self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
                                                         self.materialsList.chassisNum, self.materialsList.cellNum)
 
-            self.documentHandler.createProNumAndDHR(self.materialsList.proNum, self.materialsList.serialNum)
+            # self.documentHandler.createProNumAndDHR(self.materialsList.proNum, self.materialsList.serialNum)
             print("\n")
 
             self.statusLabelTextVar.set("COMPLETE")
@@ -354,59 +220,22 @@ class Application(tk.Frame):
 
             self.printUserChoices()
 
-    def getUserChoices(self):
-        userChoices = []
-
-        if self.printEverything.get() == 1:
-            userChoices.append(4)
-        else:
-            if self.printProAndDHRSign.get() == 1:
-                userChoices.append(1)
-
-            if self.printInstrumentSign.get() == 1:
-                userChoices.append(2)
-
-            if self.printMaterialsList.get() == 1:
-                userChoices.append(3)
-
-        return userChoices
-
-    def selectPrinter(self, printer):
-        print("Selected printer " + printer)
-        self.printer.selectPrinter(printer)
-        print("\n")
-
     def printUserChoices(self):
         if self.generatedDocuments:
             # choices = self.getUserChoices()
-            choices = [3,2,2]
+            choices = [1,1,2]
 
             if len(choices) == 0:
                 tk.messagebox.showwarning("Warning", "Please select a document to print.")
                 return
 
             for choice in choices:
-                sleep(12)
+                sleep(8)
                 self.printer.printDocuments(self.documentHandler.newInstrumentPDFPath, self.materialsListPath, self.documentHandler.newProDHRPDFPath, choice)
 
             tk.messagebox.showinfo("Info", "Documents sent to printer.")
         else:
             tk.messagebox.showerror("Error", "Please generate documents first before printing.")
-
-    def checkRequirements(self):
-        if self.materialsListPath == "":
-            tk.messagebox.showerror("Error", "Please select materials list PDF.")
-
-            return False
-        
-        if not path.exists(self.materialsListPath):
-            tk.messagebox.showerror("Error", "Please select a valid PDF file.")
-
-            return False
-
-        return True
-
-
 
 root = tk.Tk()
 

@@ -6,22 +6,22 @@ class DocumentHandler():
     def __init__(self):
         # Paths
         self.chromedriver = os.getcwd() + "\\chromedriver_win32\\chromedriver.exe"
-        self.instrumentSignExcelPath = os.getcwd() + "\\templates\\InstrumentSign_New.xlsx"
+        self.novaSeqInstrumentSignExcelPath = os.getcwd() + "\\templates\\InstrumentSign_New.xlsx"
+        self.miSeqInstrumentSignExcelPath = os.getcwd() + "\\templates\\DEVN 1046978 WIN10 Heimdall Template.xlsx"
         self.proDHRSignDocPath = os.getcwd() + "\\templates\\PRO # & DHR .docx"
         self.newInstrumentPDFPath = ""
         self.newProDHRPDFPath = ""
 
-    def createInstrumentSignPDF(self, proNum, serialNum, chassisNum, cellNum): 
+    def createNovaSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum): 
         excel = win32com.client.Dispatch("Excel.Application")
         # excel.Visible = False
-        wb = excel.Workbooks.Open(r'{}'.format(self.instrumentSignExcelPath))
+        wb = excel.Workbooks.Open(r'{}'.format(self.novaSeqInstrumentSignExcelPath))
         ws = wb.Worksheets["Input"]
         
-        print("[INFO] Editing {}.".format(self.instrumentSignExcelPath))
+        print("[INFO] Editing {}.".format(self.novaSeqInstrumentSignExcelPath))
         ws.Cells(3, 2).Value = proNum
         ws.Cells(4, 2).Value = serialNum
         ws.Cells(5, 2).Value = chassisNum
-        # ws.Cells(7, 2).Value = cellNum
         
         ws = wb.Worksheets["Template_printout"]
             
@@ -36,6 +36,9 @@ class DocumentHandler():
         excel.Quit()
         
         self.newInstrumentPDFPath = pdfPath
+
+    def createMiSeqSignPDF(self, proNum, serialNum, chassisNum):
+        pass
     
     def createProNumAndDHR(self, proNum, serialNum):
         print("[INFO] Editing {}.".format(self.proDHRSignDocPath))
