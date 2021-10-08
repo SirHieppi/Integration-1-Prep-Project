@@ -26,7 +26,7 @@ class Application(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Integration I Prep")
-        self.master.geometry("600x325")
+        self.master.geometry("600x375")
         self.materialsListPath = ""
         self.selectedPrinter = ""
         self.statusIDLEColor = "red" # "#e8d900"
@@ -38,6 +38,7 @@ class Application(tk.Frame):
         self.sapHandler = SAPHandler()
         self.webHandler = WebHandler()
 
+        self.instrumentVar = tk.StringVar(value = "Instrument: ")
         self.proNumVar = tk.StringVar(value = "Prod #: ")
         self.serialNumVar = tk.StringVar(value = "Serial #: ")
         self.chassisNumVar = tk.StringVar(value = "Chassis #: ")
@@ -125,29 +126,35 @@ class Application(tk.Frame):
                                 command = self.executeSAP) 
         self.runSAPScript.grid(row=0,column=2)
 
+        self.label_instrument =  tk.Label(self.statsFrame, 
+                                    textvariable = self.instrumentVar,
+                                    width = self.labelWidth, 
+                                    height = 2)
+        self.label_instrument.grid(row=0,column=0)
+
         self.label_proNum =  tk.Label(self.statsFrame, 
                                     textvariable = self.proNumVar,
                                     width = self.labelWidth, 
                                     height = 2)
-        self.label_proNum.grid(row=0,column=0)
+        self.label_proNum.grid(row=1,column=0)
 
         self.label_serialNum =  tk.Label(self.statsFrame, 
                                     textvariable = self.serialNumVar,
                                     width = self.labelWidth, 
                                     height = 2)
-        self.label_serialNum.grid(row=1,column=0)
+        self.label_serialNum.grid(row=2,column=0)
 
         self.label_chassisNum =  tk.Label(self.statsFrame, 
                                     textvariable = self.chassisNumVar,
                                     width = self.labelWidth, 
                                     height = 2)
-        self.label_chassisNum.grid(row=2,column=0)
+        self.label_chassisNum.grid(row=3,column=0)
 
         self.label_cellNum =  tk.Label(self.statsFrame, 
                                     textvariable = self.cellNumVar,
                                     width = self.labelWidth, 
                                     height = 2)
-        self.label_cellNum.grid(row=3,column=0)
+        self.label_cellNum.grid(row=4,column=0)
 
         self.button_generate_documents = ttk.Button(self.master, 
                             text = "Print Documents",
@@ -189,6 +196,7 @@ class Application(tk.Frame):
         if materialsListMsgBoxStr:
             tk.messagebox.showwarning("Warning", materialsListMsgBoxStr)
 
+        self.instrumentVar.set("Instrument: " + self.materialsList.instrument)
         self.proNumVar.set("Pro #: " + self.materialsList.proNum)
         self.serialNumVar.set("Serial #: " + self.materialsList.serialNum)
         self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
@@ -206,7 +214,7 @@ class Application(tk.Frame):
 
             # Modify documents to print
             self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
-                                                        self.materialsList.chassisNum, self.materialsList.cellNum)
+                                                        self.materialsList.chassisNum)
 
             # self.documentHandler.createProNumAndDHR(self.materialsList.proNum, self.materialsList.serialNum)
             print("\n")
@@ -231,7 +239,7 @@ class Application(tk.Frame):
 
             for choice in choices:
                 sleep(8)
-                self.printer.printDocuments(self.documentHandler.newInstrumentPDFPath, self.materialsListPath, self.documentHandler.newProDHRPDFPath, choice)
+                self.printer.printDocuments(self.documentHandler.newNovaSeqSignPDFPath, self.materialsListPath, choice)
 
             tk.messagebox.showinfo("Info", "Documents sent to printer.")
         else:

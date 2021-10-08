@@ -48,11 +48,11 @@ class Printer():
         ## 'SetPrinter' fails because of 'Access is denied.'
         ## But the attribute 'Duplex' is set correctly
 
-        try:
-            win32print.SetPrinter(handle, level, attributes, 0)
-        except:
-            print("win32print.SetPrinter: set 'Duplex'")
-        res = win32api.ShellExecute(0, 'print', filename, None, '.', 0)
+        # try:
+        #     win32print.SetPrinter(handle, level, attributes, 0)
+        # except:
+        #     print("win32print.SetPrinter: set 'Duplex'")
+        # res = win32api.ShellExecute(0, 'print', filename, None, '.', 0)
         
         win32print.ClosePrinter(handle)
 
@@ -68,7 +68,7 @@ class Printer():
             pass
         self.printDocument(newInstrumentPDFPath)
 
-    def printDocuments(self, newInstrumentPDFPath, materialsListPath, newProDHRPDFPath, choice):
+    def printDocuments(self, newInstrumentPDFPath, materialsListPath, choice):
         if choice == 1:
             self.printInstrumentSign(newInstrumentPDFPath)
         elif choice == 2:

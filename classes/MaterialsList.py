@@ -27,6 +27,7 @@ class MaterialsList():
             'ASSY, CHASSIS, NOVASEQ, V1.5': 1,
             'ASSY, DUAL ACTUATION DECK 2.0': 1    
         }    
+        self.instrument = ""
         self.proNum = ""
         self.serialNum = ""
         self.chassisNum = ""
@@ -149,6 +150,7 @@ class MaterialsList():
         # extracting text from page  
         text = pageObj.extractText()
         
+        instrument = text.partition('Batch')[0].partition('Material Desc')[2]
         proNum = ""
         serialNum = ""
         chassisNum = ""
@@ -191,6 +193,7 @@ class MaterialsList():
                     
             tableIndex += 1
             
+        self.instrument = instrument
         self.proNum = proNum
         self.serialNum = serialNum
         self.chassisNum = chassisNum

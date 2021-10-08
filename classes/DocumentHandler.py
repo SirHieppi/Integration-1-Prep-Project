@@ -6,27 +6,26 @@ class DocumentHandler():
     def __init__(self):
         # Paths
         self.chromedriver = os.getcwd() + "\\chromedriver_win32\\chromedriver.exe"
-        self.novaSeqInstrumentSignExcelPath = os.getcwd() + "\\templates\\InstrumentSign_New.xlsx"
-        self.miSeqInstrumentSignExcelPath = os.getcwd() + "\\templates\\DEVN 1046978 WIN10 Heimdall Template.xlsx"
-        self.proDHRSignDocPath = os.getcwd() + "\\templates\\PRO # & DHR .docx"
-        self.newInstrumentPDFPath = ""
-        self.newProDHRPDFPath = ""
+        self.novaSeqSignExcelPath = os.getcwd() + "\\templates\\InstrumentSign_New.xlsx"
+        self.miSeqSignExcelPath = os.getcwd() + "\\templates\\DEVN 1046978 WIN10 Heimdall Template.xlsx"
+        self.newNovaSeqSignPDFPath = ""
+        self.newMiSeqSignPDFPath = ""
 
     def createNovaSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum): 
         excel = win32com.client.Dispatch("Excel.Application")
         # excel.Visible = False
-        wb = excel.Workbooks.Open(r'{}'.format(self.novaSeqInstrumentSignExcelPath))
+        wb = excel.Workbooks.Open(r'{}'.format(self.novaSeqSignExcelPath))
         ws = wb.Worksheets["Input"]
         
-        print("[INFO] Editing {}.".format(self.novaSeqInstrumentSignExcelPath))
+        print("[INFO] Editing {}.".format(self.novaSeqSignExcelPath))
         ws.Cells(3, 2).Value = proNum
         ws.Cells(4, 2).Value = serialNum
         ws.Cells(5, 2).Value = chassisNum
         
         ws = wb.Worksheets["Template_printout"]
             
-        pdfPath = os.getcwd() + "\\exports\\{}_Instrument_Sign".format(serialNum) + ".pdf"
-        print("[INFO] Saving instrument sign to {}".format(pdfPath))
+        pdfPath = os.getcwd() + "\\exports\\{}_NovaSeq_Instrument_Sign".format(serialNum) + ".pdf"
+        print("[INFO] Saving NovaSeq instrument sign to {}".format(pdfPath))
         wb.Worksheets("Template_printout").Select()
         
         wb.ActiveSheet.ExportAsFixedFormat(0, pdfPath)
@@ -35,47 +34,29 @@ class DocumentHandler():
         
         excel.Quit()
         
-        self.newInstrumentPDFPath = pdfPath
+        self.newNovaSeqSignPDFPath = pdfPath
 
-    def createMiSeqSignPDF(self, proNum, serialNum, chassisNum):
-        pass
-    
-    def createProNumAndDHR(self, proNum, serialNum):
-        print("[INFO] Editing {}.".format(self.proDHRSignDocPath))
-        document = Document(self.proDHRSignDocPath)
-
-        debugPrint = False
-
-        serialNum = serialNum[1:]
-        serialNumIndex = 0
-        foundA = False
-        lineIndex = 0
-
-        # Finds the start of serial number and replaces one by one since word doc txt may be split up
-        for paragraph in document.paragraphs:
-            for line in paragraph.runs:
-                replaceLine = ""
-                for char in line.text:
-                    if char == 'A':
-                        foundA = True
-                    if foundA and char != 'A' and serialNumIndex < len(serialNum):
-                        replaceLine += serialNum[serialNumIndex]
-                        serialNumIndex += 1
-                    else:
-                        replaceLine += char
-                if debugPrint:
-                    print("'" + line.text + "'" + " -> '" + replaceLine + "'")
-                lineIndex += 1
-                if replaceLine != line.text:
-                    line.text = replaceLine
+    def createMiSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum):
+        excel = win32com.client.Dispatch("Excel.Application")
+        # excel.Visible = False
+        wb = excel.Workbooks.Open(r'{}'.format(self.miSeqSignExcelPath))
+        ws = wb.Worksheets["Input"]
         
-        inline = document.paragraphs[2].runs
-        inline[-1].text = proNum
+        print("[INFO] Editing {}.".format(self.miSeqSignExcelPath))
+        ws.Cells(3, 2).Value = proNum
+        ws.Cells(4, 2).Value = serialNum
+        ws.Cells(5, 2).Value = chassisNum
         
-        # document.save(self.proDHRSignDocPath)
-
-        self.newProDHRPDFPath = os.getcwd() + "\\exports\\A{}_ProDHR_Sign".format(serialNum) + ".docx"
-        print(self.newProDHRPDFPath)
-        # convert(self.proDHRSignDocPath, proDHRPDFPath)
-
-        document.save(self.newProDHRPDFPath)
+        ws = wb.Worksheets["Template_printout"]
+            
+        pdfPath = os.getcwd() + "\\exports\\{}_Instrument_Sign".format(serialNum) + ".pdf"
+        print("[INFO] Saving MiSeq instrument sign to {}".format(pdfPath))
+        wb.Worksheets("Template_printout").Select()
+        
+        wb.ActiveSheet.ExportAsFixedFormat(0, pdfPath)
+        
+        wb.Close(True)
+        
+        excel.Quit()
+        
+        self.newNovaSeqSignPDFPath = pdfPath
