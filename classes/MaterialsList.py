@@ -28,6 +28,7 @@ class MaterialsList():
             'ASSY, DUAL ACTUATION DECK 2.0': 1    
         }    
         self.instrument = ""
+        self.materialNumber = ""
         self.proNum = ""
         self.serialNum = ""
         self.chassisNum = ""
@@ -151,6 +152,7 @@ class MaterialsList():
         text = pageObj.extractText()
         
         instrument = text.partition('Batch')[0].partition('Material Desc')[2]
+        materialNumber = text.partition('Material Number')[2].partition('Header')[0]
         proNum = ""
         serialNum = ""
         chassisNum = ""
@@ -166,8 +168,11 @@ class MaterialsList():
         proNum = proNum.lstrip("0")
         
         # Get serial num
-        after = text.partition("Serial #")[2]
-        serialNum = after[:6]
+        if instrument == "20013740":
+            after = text.partition("Serial #")[2]
+            serialNum = after[:6]
+        elif instrument == "15033616":
+            serialNum = text.partition("Serial")[2].partition("Quantity")[0][8:]
             
         # closing the pdf file object  
         pdfFileObj.close() 
@@ -194,10 +199,13 @@ class MaterialsList():
             tableIndex += 1
             
         self.instrument = instrument
+        self.materialNumber = materialNumber
         self.proNum = proNum
         self.serialNum = serialNum
         self.chassisNum = chassisNum
-        self.cellNum = str(self.calculateCellNum())
+
+        if self.instrument == "20013740":
+            self.cellNum = str(self.calculateCellNum())
 
     def calculateCellNum(self):
         cellNum = int(self.serialNum[1:]) % 3

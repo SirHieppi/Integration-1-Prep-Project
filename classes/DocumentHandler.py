@@ -36,22 +36,19 @@ class DocumentHandler():
         
         self.newNovaSeqSignPDFPath = pdfPath
 
-    def createMiSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum):
+    def createMiSeqInstrumentSignPDF(self, proNum, serialNum):
         excel = win32com.client.Dispatch("Excel.Application")
         # excel.Visible = False
         wb = excel.Workbooks.Open(r'{}'.format(self.miSeqSignExcelPath))
-        ws = wb.Worksheets["Input"]
+        ws = wb.Worksheets["MISeqRUO"]
         
         print("[INFO] Editing {}.".format(self.miSeqSignExcelPath))
-        ws.Cells(3, 2).Value = proNum
-        ws.Cells(4, 2).Value = serialNum
-        ws.Cells(5, 2).Value = chassisNum
-        
-        ws = wb.Worksheets["Template_printout"]
-            
+        ws.Cells(1, 2).Value = proNum
+        ws.Cells(2, 2).Value = serialNum
+                    
         pdfPath = os.getcwd() + "\\exports\\{}_Instrument_Sign".format(serialNum) + ".pdf"
         print("[INFO] Saving MiSeq instrument sign to {}".format(pdfPath))
-        wb.Worksheets("Template_printout").Select()
+        wb.Worksheets("MISeqRUO").Select()
         
         wb.ActiveSheet.ExportAsFixedFormat(0, pdfPath)
         

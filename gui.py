@@ -181,7 +181,7 @@ class Application(tk.Frame):
 
         # Copy materials list pdf from temp folder to exports folder
         tempPath = path.expanduser('~/AppData/Local/Temp')
-        materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[0]
+        materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[-1]
         materialsListPdfDstPath = os.getcwd() + "\\exports\\" + materialsListPdfSrcPath.split("\\")[-1]
 
         # print("src: " + src)
@@ -202,10 +202,11 @@ class Application(tk.Frame):
         self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
         self.cellNumVar.set("Cell #: " + self.materialsList.cellNum)
 
-        if self.materialsList.chassisNum == "":
+        # Only NovaSeq needs chassis number for instrument sign
+        if self.materialsList.chassisNum == "" and self.materialsList.materialNumber == "20013740":
             tk.messagebox.showerror("Error", "Chassis not issued. Cannot create sign.")
         else:
-
+            print("[INFO] Retrieved Instrument: {} from materials list.".format(self.materialsList.instrument))
             print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))
             print("[INFO] Retrieved Serial Num: {} from materials list.".format(self.materialsList.serialNum))
             print("[INFO] Retrieved Chassis Num: {} from materials list.".format(self.materialsList.chassisNum))
@@ -213,10 +214,13 @@ class Application(tk.Frame):
             print("\n")
 
             # Modify documents to print
-            self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
+            if self.materialsList.materialNumber == "20013740":
+                self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
                                                         self.materialsList.chassisNum)
+            elif self.materialsList.materialNumber == "15033616":
+                self.documentHandler.createMiSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum)
 
-            # self.documentHandler.createProNumAndDHR(self.materialsList.proNum, self.materialsList.serialNum)
+
             print("\n")
 
             self.statusLabelTextVar.set("COMPLETE")
@@ -230,7 +234,6 @@ class Application(tk.Frame):
 
     def printUserChoices(self):
         if self.generatedDocuments:
-            # choices = self.getUserChoices()
             choices = [1,1,2]
 
             if len(choices) == 0:
