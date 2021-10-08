@@ -207,6 +207,7 @@ class Application(tk.Frame):
             tk.messagebox.showerror("Error", "Chassis not issued. Cannot create sign.")
         else:
             print("[INFO] Retrieved Instrument: {} from materials list.".format(self.materialsList.instrument))
+            print("[INFO] Retrieved Material number: {} from materials list.".format(self.materialsList.materialNumber))
             print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))
             print("[INFO] Retrieved Serial Num: {} from materials list.".format(self.materialsList.serialNum))
             print("[INFO] Retrieved Chassis Num: {} from materials list.".format(self.materialsList.chassisNum))

@@ -168,10 +168,12 @@ class MaterialsList():
         proNum = proNum.lstrip("0")
         
         # Get serial num
-        if instrument == "20013740":
+        # NovaSeq
+        if materialNumber == "20013740":
             after = text.partition("Serial #")[2]
             serialNum = after[:6]
-        elif instrument == "15033616":
+        # MiSeq
+        elif materialNumber == "15033616":
             serialNum = text.partition("Serial")[2].partition("Quantity")[0][8:]
             
         # closing the pdf file object  

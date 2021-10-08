@@ -43,8 +43,8 @@ class DocumentHandler():
         ws = wb.Worksheets["MISeqRUO"]
         
         print("[INFO] Editing {}.".format(self.miSeqSignExcelPath))
-        ws.Cells(1, 2).Value = proNum
-        ws.Cells(2, 2).Value = serialNum
+        ws.Cells(2, 2).Value = proNum
+        ws.Cells(1, 2).Value = serialNum
                     
         pdfPath = os.getcwd() + "\\exports\\{}_Instrument_Sign".format(serialNum) + ".pdf"
         print("[INFO] Saving MiSeq instrument sign to {}".format(pdfPath))
