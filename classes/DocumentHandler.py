@@ -25,6 +25,8 @@ class DocumentHandler():
         # Select different template version for china unit
         if materialNumber == "20046751":
             ws.Cells(6,2).Value = "CA 2.0 (MAH)"
+        elif materialNumber == "20013740":
+            ws.Cells(6,2).Value = "CA 1.5"
         
         ws = wb.Worksheets["Template_printout"]
             
