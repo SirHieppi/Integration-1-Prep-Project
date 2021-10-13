@@ -1,5 +1,7 @@
 {
-	"15033616-MiseqRUO": {
+	"15033616": {
+		"NAME": "MiseqRUO",
+
 		"ASSY,CABLES,INSTRUMENT" : 1,
 
 		"ASSY,IMAGING MODULE, DIE CAST, MiSeq" : 1,
@@ -65,7 +67,8 @@
 		"MISEQ, SOLID STATE DRIVE, 1TB" : 1
 	},
 	
-	"20014737-MiseqDx": {
+	"20014737": {
+		"NAME": "MiseqDx",
 		
 		"ASSY,CABLES,INSTRUMENT" : 1,
 
@@ -148,7 +151,9 @@
 		"MiSeq® RGT Kit v3 600 cyc PE-Bx 1 of 2" : 1
 	},
 
-	"15048976-MiseqFGx": {
+	"15048976": {
+		"NAME": "MiseqFGx",
+
 		"ASSY,CABLES,INSTRUMENT" : 1,
 
 		"ASSY,IMAGING MODULE, DIE CAST, MiSeq" : 1,
@@ -209,13 +214,12 @@
 
 		"MISEQ, SOLID STATE DRIVE, 1TB" : 2,
 
-		"ASSY,IMAGING MODULE" :1,
-
-
+		"ASSY,IMAGING MODULE" :1
 	},
 
-	"20014054-MiseqDxChina": {
-		
+	"20014054": {
+		"NAME": "MiseqDxChina",
+
 		"ASSY,CABLES,INSTRUMENT" : 1,
 
 		"ASSY,IMAGING MODULE, DIE CAST, MiSeq" : 1,
@@ -299,7 +303,8 @@
 		"MiSeq® RGT Kit v3 600 cyc PE-Bx 1 of 2" : 1
 	},
 
-	"20044796-NovaseqDx": {
+	"20044796": {
+		"NAME": "NovaseqDx",
 
 		"SHIPPING BRKT, FLUIDICS MODULE, CUSTOM": 2, 
 
@@ -345,7 +350,8 @@
 
 	},
 
-	"20013740-NovaseqRUO": {
+	"20013740": {
+		"NAME": "NovaseqRUO",
 		
 		"SHIPPING BRKT, FLUIDICS MODULE, CUSTOM": 2, 
 
@@ -388,6 +394,52 @@
 		"ASSY, CHASSIS, NOVASEQ, V1.5": 1,
 
 		"ASSY, DUAL ACTUATION DECK 2.0": 1    
+	},
 
-	}    
+	"20046751": {
+		"NAME": "NovaseqChina",
+
+		"SHIPPING BRKT, FLUIDICS MODULE, CUSTOM": 2, 
+
+		"DUCT, TUBING": 1, 
+
+		"ASSY, RCA, TL, NOVASEQ": 2, 
+
+		"ASSY, PHANTOM BIM, TL": 2, 
+
+		"BRACKET, TUBE SUPPORT": 1, 
+
+		"CBL,APX_MISC_H22-OM GROUNDING_FORK": 2,
+
+		"ASSY, FLUIDICS, MODULE,V2": 1, 
+
+		"PCA, RFID Integrated Antenna": 1, 
+
+		"ASSEMBLY, CABLE TRACK": 1, 
+
+		"VIB ISOLATOR ASSY, TUNED DAMPER, REAR": 2, 
+
+		"VIB ISOLATOR ASSY, TUNED DAMPER, FRONT": 2, 
+
+		"MOTION CONTROLLER, C413": 1, 
+
+		"ASSY, NOVASEQ, COMPUTE ENGINE (CE), CH": 1,
+
+		"ASSY, OPA W/ NOZZLE": 1, 
+
+		"ASSY, XY STAGE MODULE": 1, 
+
+		"ASSY, CAMERA MODULE (CAM)": 1,
+
+		"ASSY, FOCUS TRACKING MODULE (FTM)": 1,
+
+		"ASSY, EMISSION OPTICS MODULE (EOM)": 1,
+
+		"LGM_VES": 1,
+
+		"ASSY, CHASSIS, NOVASEQ, V2": 1,
+
+		"ASSY, DUAL ACTUATION DECK 2.0": 1    
+
+	}
 }

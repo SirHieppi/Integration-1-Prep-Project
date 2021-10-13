@@ -1,32 +1,10 @@
 import tabula
 import PyPDF2
 import math
+import json
 
 class MaterialsList():
     def  __init__(self):
-        self.totalNovaseqMaterials = {
-            'SHIPPING BRKT, FLUIDICS MODULE, CUSTOM': 2, 
-            'DUCT, TUBING': 1, 
-            'ASSY, RCA, TL, NOVASEQ': 2, 
-            'ASSY, PHANTOM BIM, TL': 2, 
-            'BRACKET, TUBE SUPPORT': 1, 
-            'CBL,APX_MISC_H22-OM GROUNDING_FORK': 2,
-            'ASSY, FLUIDICS, MODULE,V2': 1, 
-            'PCA, RFID Integrated Antenna': 1, 
-            'ASSEMBLY, CABLE TRACK': 1, 
-            'VIB ISOLATOR ASSY, TUNED DAMPER, REAR': 2, 
-            'VIB ISOLATOR ASSY, TUNED DAMPER, FRONT': 2, 
-            'MOTION CONTROLLER, C413': 1, 
-            'ASSY,COMPUTE ENGINE, NORTHSHORE,NOVASEQ': 1,
-            'ASSY, OPA W/ NOZZLE': 1, 
-            'ASSY, XY STAGE MODULE': 1, 
-            'ASSY, CAMERA MODULE (CAM)': 1,
-            'ASSY, FOCUS TRACKING MODULE (FTM)': 1,
-            'ASSY, EMISSION OPTICS MODULE (EOM)': 1,
-            'LGM_VES': 1,
-            'ASSY, CHASSIS, NOVASEQ, V1.5': 1,
-            'ASSY, DUAL ACTUATION DECK 2.0': 1    
-        }    
         self.instrument = ""
         self.materialNumber = ""
         self.proNum = ""
@@ -36,10 +14,10 @@ class MaterialsList():
         self.cellNum = ""
 
     def getData(self, materialsListPath):
+        self.extractDataFromMaterialsList(materialsListPath)
+
         if not self.checkMaterialsList(materialsListPath):
             print("Materials list not valid.")
-
-        self.extractDataFromMaterialsList(materialsListPath)
     
     def getMaterialsListMsgBoxStr(self):
         ret = ""
@@ -95,30 +73,41 @@ class MaterialsList():
                                         ret[key] -= int(table['Qty Issued'][index])
 
                         index += 1
-        print('ret:')
-        print(ret)
+        # print('ret:')
+        # print(ret)
         return ret
 
     def checkMaterialsList(self, materialsListPath):
         materialsList = self.createMaterialsListDict(materialsListPath)
 
-        print("[INFO] Checking materials list...")
-        for material in self.totalNovaseqMaterials:
-            # print(missingPartsStr)
-            if not material in materialsList:
-                self.missingPartsStr += "* " + material + ": {} \n".format(self.totalNovaseqMaterials[material])
-                self.missing = True
-            else:
-                diff = self.totalNovaseqMaterials[material] - materialsList[material]
+        f = open("./Entire BOM List.json")
+        bom = json.loads(f.read())
 
-                if diff < 0:
-                    # surplus
-                    self.surplusPartsStr += "* " + material + ": {} \n".format(abs(diff))
-                    self.surplus = True
-                elif diff > 0:
-                    # missing
-                    self.missingPartsStr += "* " + material + ": {} \n".format(diff)
+        print(bom[self.materialNumber])
+
+        print("[INFO] Checking materials list...")
+        for material in bom[self.materialNumber]:
+            # print(missingPartsStr)
+            if not material == "NAME":
+                if not material in bom[self.materialNumber]:
+                    self.missingPartsStr += "* " + material + ": {} \n".format(bom[self.materialNumber])
                     self.missing = True
+                else:
+                    if material not in materialsList:
+                        diff = bom[self.materialNumber][material]
+                    else:
+                        diff = bom[self.materialNumber][material] - materialsList[material]
+
+                    if diff < 0:
+                        # surplus
+                        self.surplusPartsStr += "* " + material + ": {} \n".format(abs(diff))
+                        self.surplus = True
+                    elif diff > 0:
+                        # missing
+                        self.missingPartsStr += "* " + material + ": {} \n".format(diff)
+                        self.missing = True
+
+        f.close()
 
         if self.missing and self.surplus:
             print(self.missingPartsStr)
@@ -167,20 +156,25 @@ class MaterialsList():
 
         proNum = proNum.lstrip("0")
         
-        # Get serial num
-        # NovaSeq
-        if materialNumber == "20013740":
-            after = text.partition("Serial #")[2]
-            serialNum = after[:6]
-        # MiSeq
-        elif materialNumber == "15033616":
-            serialNum = text.partition("Serial")[2].partition("Quantity")[0][8:]
+        # # NovaSeq
+        # if materialNumber == "20013740":
+        #     after = text.partition("Serial #")[2]
+        #     serialNum = after[:6]
+        # # MiSeq
+        # elif materialNumber == "15033616":
+        #     serialNum = text.partition("Serial")[2].partition("Quantity")[0][8:]
             
         # closing the pdf file object  
         pdfFileObj.close() 
 
         # Get chassis num from table in pdf
         tables = tabula.read_pdf(materialsListPath, pages = "all")
+
+        # Get serial num
+        if materialNumber == "20013740":
+            serialNum = tables[-1].keys()[0][4:]
+        else:
+            serialNum = tables[-1].keys()[0]
         
         tableIndex = 0
         for table in tables: 
@@ -206,11 +200,16 @@ class MaterialsList():
         self.serialNum = serialNum
         self.chassisNum = chassisNum
 
-        if self.instrument == "20013740":
+        if self.materialNumber == "20013740" or self.materialNumber == "20046751":
             self.cellNum = str(self.calculateCellNum())
 
     def calculateCellNum(self):
-        cellNum = int(self.serialNum[1:]) % 3
+        startingIndex = 0
+        for char in self.serialNum:
+            if not char.isdigit():
+                startingIndex += 1
+
+        cellNum = int(self.serialNum[startingIndex:]) % 3
 
         if cellNum == 0:
             return 3

@@ -11,7 +11,7 @@ class DocumentHandler():
         self.newNovaSeqSignPDFPath = ""
         self.newMiSeqSignPDFPath = ""
 
-    def createNovaSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum): 
+    def createNovaSeqInstrumentSignPDF(self, proNum, serialNum, chassisNum, materialNumber): 
         excel = win32com.client.Dispatch("Excel.Application")
         # excel.Visible = False
         wb = excel.Workbooks.Open(r'{}'.format(self.novaSeqSignExcelPath))
@@ -21,6 +21,10 @@ class DocumentHandler():
         ws.Cells(3, 2).Value = proNum
         ws.Cells(4, 2).Value = serialNum
         ws.Cells(5, 2).Value = chassisNum
+        
+        # Select different template version for china unit
+        if materialNumber == "20046751":
+            ws.Cells(6,2).Value = "CA 2.0 (MAH)"
         
         ws = wb.Worksheets["Template_printout"]
             
@@ -49,8 +53,11 @@ class DocumentHandler():
         pdfPath = os.getcwd() + "\\exports\\{}_Instrument_Sign".format(serialNum) + ".pdf"
         print("[INFO] Saving MiSeq instrument sign to {}".format(pdfPath))
         wb.Worksheets("MISeqRUO").Select()
-        
-        wb.ActiveSheet.ExportAsFixedFormat(0, pdfPath)
+
+        try:
+            wb.ActiveSheet.ExportAsFixedFormat(0, pdfPath)
+        except:
+            print("Cannot save " + pdfPath)
         
         wb.Close(True)
         

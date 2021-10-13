@@ -38,11 +38,11 @@ class Application(tk.Frame):
         self.sapHandler = SAPHandler()
         self.webHandler = WebHandler()
 
-        self.instrumentVar = tk.StringVar(value = "Instrument: ")
-        self.proNumVar = tk.StringVar(value = "Prod #: ")
-        self.serialNumVar = tk.StringVar(value = "Serial #: ")
-        self.chassisNumVar = tk.StringVar(value = "Chassis #: ")
-        self.cellNumVar = tk.StringVar(value = "Cell #: ")
+        self.instrumentVar = tk.StringVar(value = "Instrument: N/A")
+        self.proNumVar = tk.StringVar(value = "Prod #: N/A")
+        self.serialNumVar = tk.StringVar(value = "Serial #: N/A")
+        self.chassisNumVar = tk.StringVar(value = "Chassis #: N/A")
+        self.cellNumVar = tk.StringVar(value = "Cell #: N/A")
         self.statusLabelTextVar = tk.StringVar(value = "READY")
 
         self.generatedDocuments = False
@@ -181,7 +181,7 @@ class Application(tk.Frame):
 
         # Copy materials list pdf from temp folder to exports folder
         tempPath = path.expanduser('~/AppData/Local/Temp')
-        materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[-1]
+        materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[0]
         materialsListPdfDstPath = os.getcwd() + "\\exports\\" + materialsListPdfSrcPath.split("\\")[-1]
 
         # print("src: " + src)
@@ -215,9 +215,9 @@ class Application(tk.Frame):
             print("\n")
 
             # Modify documents to print
-            if self.materialsList.materialNumber == "20013740":
+            if self.materialsList.materialNumber == "20013740" or self.materialsList.materialNumber == "20046751":
                 self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
-                                                        self.materialsList.chassisNum)
+                                                        self.materialsList.chassisNum, self.materialsList.materialNumber)
             elif self.materialsList.materialNumber == "15033616":
                 self.documentHandler.createMiSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum)
 
