@@ -26,7 +26,7 @@ class Application(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Integration I Prep")
-        self.master.geometry("600x375")
+        self.master.geometry("750x355")
         self.materialsListPath = ""
         self.selectedPrinter = ""
         self.statusIDLEColor = "red" # "#e8d900"
@@ -128,7 +128,7 @@ class Application(tk.Frame):
 
         self.label_instrument =  tk.Label(self.statsFrame, 
                                     textvariable = self.instrumentVar,
-                                    width = self.labelWidth, 
+                                    width = self.labelWidth + 15, 
                                     height = 2)
         self.label_instrument.grid(row=0,column=0)
 
@@ -235,7 +235,8 @@ class Application(tk.Frame):
 
     def printUserChoices(self):
         if self.generatedDocuments:
-            choices = [1,1,2]
+            choices = []
+            # choices = [1,1,2]
 
             if len(choices) == 0:
                 tk.messagebox.showwarning("Warning", "Please select a document to print.")

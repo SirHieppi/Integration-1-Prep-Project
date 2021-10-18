@@ -38,8 +38,6 @@ class MaterialsList():
         
         tables = tabula.read_pdf(materialsListPath, pages='all', lattice=True)
 
-
-
         for table in tables:
             index = 0
 
@@ -49,32 +47,57 @@ class MaterialsList():
 
             # print(table.keys())
 
-            if 'Description' in table.keys():
-                for description in table['Description']:
-                    if description != 'N/A':
-                        key = str(description).replace('\r', ' ')
+            # if 'Description' in table.keys():
+            #     for description in table['Description']:
+            #         if description != 'N/A':
+            #             key = str(description).replace('\r', ' ')
 
-                        if key in ret:
+            #             if key in ret:
+            #                 if table['Mvt. Typ.'][index] == 261:
+            #                     ret[key] += 1
+            #                 elif table['Mvt. Typ.'][index] == 262:
+            #                     ret[key] -= 1
+            #             else:
+            #                 if 'Qty Issued' in table:
+            #                     if math.isnan(table['Qty Issued'][index]):
+            #                         ret[key] = 0
+            #                     else:
+            #                         if not key in ret:
+            #                             ret[key] = 0
+
+            #                         if table['Mvt. Typ.'][index] == 261:
+            #                             ret[key] += int(table['Qty Issued'][index])
+            #                         elif table['Mvt. Typ.'][index] == 262:
+            #                             ret[key] -= int(table['Qty Issued'][index])
+
+            #             index += 1
+            if 'Material #' in table.keys():
+                for materialNum in table['Material #']:
+                    materialNum = str(materialNum)
+                    if materialNum != 'N/A':
+                        description = str(table["Description"][index]).replace('\r', ' ')
+
+                        if materialNum in ret:
                             if table['Mvt. Typ.'][index] == 261:
-                                ret[key] += 1
+                                ret[materialNum][1] += 1
                             elif table['Mvt. Typ.'][index] == 262:
-                                ret[key] -= 1
+                                ret[materialNum][1] -= 1
                         else:
                             if 'Qty Issued' in table:
                                 if math.isnan(table['Qty Issued'][index]):
-                                    ret[key] = 0
+                                    ret[materialNum][1] = 0
                                 else:
-                                    if not key in ret:
-                                        ret[key] = 0
+                                    if not materialNum in ret:
+                                        ret[materialNum] = [description, 0]
 
                                     if table['Mvt. Typ.'][index] == 261:
-                                        ret[key] += int(table['Qty Issued'][index])
+                                        ret[materialNum][1] += int(table['Qty Issued'][index])
                                     elif table['Mvt. Typ.'][index] == 262:
-                                        ret[key] -= int(table['Qty Issued'][index])
+                                        ret[materialNum][1] -= int(table['Qty Issued'][index])
+                    index += 1
 
-                        index += 1
-        # print('ret:')
-        # print(ret)
+        print('Materials list:')
+        print(ret)
         return ret
 
     def checkMaterialsList(self, materialsListPath):
@@ -86,27 +109,48 @@ class MaterialsList():
         print(bom[self.materialNumber])
 
         print("[INFO] Checking materials list...")
-        for material in bom[self.materialNumber]:
+        # for material in bom[self.materialNumber]:
+        #     # print(missingPartsStr)
+        #     if not material == "NAME":
+        #         if not material in bom[self.materialNumber]:
+        #             self.missingPartsStr += "* " + material + ": {} \n".format(bom[self.materialNumber])
+        #             self.missing = True
+        #         else:
+        #             if material not in materialsList:
+        #                 diff = bom[self.materialNumber][material]
+        #             else:
+        #                 diff = bom[self.materialNumber][material] - materialsList[material]
+
+        #             if diff < 0:
+        #                 # surplus
+        #                 self.surplusPartsStr += "* " + material + ": {} \n".format(abs(diff))
+        #                 self.surplus = True
+        #             elif diff > 0:
+        #                 # missing
+        #                 self.missingPartsStr += "* " + material + ": {} \n".format(diff)
+        #                 self.missing = True
+        for material in materialsList:
             # print(missingPartsStr)
             if not material == "NAME":
-                if not material in bom[self.materialNumber]:
-                    self.missingPartsStr += "* " + material + ": {} \n".format(bom[self.materialNumber])
+                if not material in bom[self.materialNumber] and material in bom[self.materialNumber]:
+                    self.missingPartsStr += "* " + str(material) + ": {} \n".format(bom[self.materialNumber][material][0])
                     self.missing = True
-                else:
+                
+                # Ignores materials that are not on the BOM
+                elif material in bom[self.materialNumber]:
                     if material not in materialsList:
-                        diff = bom[self.materialNumber][material]
+                        diff = bom[self.materialNumber][material][1]
                     else:
-                        diff = bom[self.materialNumber][material] - materialsList[material]
+                        diff = bom[self.materialNumber][material][1] - materialsList[material][1]
 
                     if diff < 0:
                         # surplus
-                        self.surplusPartsStr += "* " + material + ": {} \n".format(abs(diff))
+                        self.surplusPartsStr += "* " + bom[self.materialNumber][material][0] + ": {} \n".format(abs(diff))
                         self.surplus = True
                     elif diff > 0:
                         # missing
-                        self.missingPartsStr += "* " + material + ": {} \n".format(diff)
+                        self.missingPartsStr += "* " + bom[self.materialNumber][material][0] + ": {} \n".format(diff)
                         self.missing = True
-
         f.close()
 
         if self.missing and self.surplus:
@@ -177,19 +221,26 @@ class MaterialsList():
             serialNum = tables[-1].keys()[0]
         
         tableIndex = 0
+
+        # Find chassis num
         for table in tables: 
             descriptionIndex = 0
-            if 'Description' in table.keys():
-                for description in table['Description']:
-                    if isinstance(description, str) and "ASSY, CHASSIS," in description:
+            # if 'Description' in table.keys():
+            #     for description in table['Description']:
+            #         if isinstance(description, str) and "ASSY, CHASSIS," in description:
+            #             chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex]
+
+            #             # sometimes serial number is on row below because each material is broken up into several rows in the table
+            #             if isinstance(chassisNum, int) and math.isnan(chassisNum):
+            #                 # serial a row below "ASSY, CHASSIS,"
+            #                 chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex + 1]
+
+            #             break
+            #         descriptionIndex += 1
+            if 'Material #' in table.keys():
+                for material in table['Material #']:
+                    if isinstance(material, int) and "ASSY, CHASSIS," in tables[tableIndex]["Description"][descriptionIndex]:
                         chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex]
-
-                        # sometimes serial number is on row below because each material is broken up into several rows in the table
-                        if isinstance(chassisNum, int) and math.isnan(chassisNum):
-                            # serial a row below "ASSY, CHASSIS,"
-                            chassisNum = tables[tableIndex]["Batch # / Serial #"][descriptionIndex + 1]
-
-                        break
                     descriptionIndex += 1
                     
             tableIndex += 1

@@ -22,7 +22,7 @@ class DocumentHandler():
         ws.Cells(4, 2).Value = serialNum
         ws.Cells(5, 2).Value = chassisNum
         
-        # Select different template version for china unit
+        # Select different template version for different units
         if materialNumber == "20046751":
             ws.Cells(6,2).Value = "CA 2.0 (MAH)"
         elif materialNumber == "20013740":
