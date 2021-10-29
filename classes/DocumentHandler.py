@@ -29,8 +29,8 @@ class DocumentHandler():
             ws.Cells(6,2).Value = "CA 1.5"
         
         ws = wb.Worksheets["Template_printout"]
-            
-        pdfPath = os.getcwd() + "\\exports\\{}_NovaSeq_Instrument_Sign".format(serialNum) + ".pdf"
+        parentDir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        pdfPath = parentDir + "\\exports\\{}_NovaSeq_Instrument_Sign".format(serialNum) + ".pdf"
         print("[INFO] Saving NovaSeq instrument sign to {}".format(pdfPath))
         wb.Worksheets("Template_printout").Select()
         

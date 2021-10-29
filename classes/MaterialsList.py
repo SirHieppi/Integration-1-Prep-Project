@@ -215,7 +215,7 @@ class MaterialsList():
         tables = tabula.read_pdf(materialsListPath, pages = "all")
 
         # Get serial num
-        if materialNumber == "20013740":
+        if materialNumber == "20013740" or "20046751":
             serialNum = tables[-1].keys()[0][4:]
         else:
             serialNum = tables[-1].keys()[0]

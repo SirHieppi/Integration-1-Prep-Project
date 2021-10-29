@@ -182,7 +182,8 @@ class Application(tk.Frame):
         # Copy materials list pdf from temp folder to exports folder
         tempPath = path.expanduser('~/AppData/Local/Temp')
         materialsListPdfSrcPath = self.find_ext(tempPath, "pdf")[0]
-        materialsListPdfDstPath = os.getcwd() + "\\exports\\" + materialsListPdfSrcPath.split("\\")[-1]
+        parentDir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+        materialsListPdfDstPath = parentDir + "\\exports\\" + materialsListPdfSrcPath.split("\\")[-1]
 
         # print("src: " + src)
         # print("dst: " + dst)
@@ -235,15 +236,15 @@ class Application(tk.Frame):
 
     def printUserChoices(self):
         if self.generatedDocuments:
-            choices = []
-            # choices = [1,1,2]
+            # choices = []
+            choices = [1,1,2]
 
             if len(choices) == 0:
                 tk.messagebox.showwarning("Warning", "Please select a document to print.")
                 return
 
             for choice in choices:
-                sleep(8)
+                sleep(9)
                 self.printer.printDocuments(self.documentHandler.newNovaSeqSignPDFPath, self.materialsListPath, choice)
 
             tk.messagebox.showinfo("Info", "Documents sent to printer.")
