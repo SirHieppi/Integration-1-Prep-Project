@@ -1,6 +1,7 @@
 import subprocess
 import tkinter as tk
 import tkinter.messagebox
+import tkinter.simpledialog
 import sys
 import os
 import shutil
@@ -197,42 +198,43 @@ class Application(tk.Frame):
         if materialsListMsgBoxStr:
             tk.messagebox.showwarning("Warning", materialsListMsgBoxStr)
 
+        # Only NovaSeq needs chassis number for instrument sign
+        if self.materialsList.chassisNum == "" and self.materialsList.materialNumber == "20013740":
+            self.materialsList.chassisNum = tk.simpledialog.askstring("Warning", "Chassis S/N not found!\nPlease enter chassis serial number:")
+            # tk.messagebox.showerror("Error", "Chassis not issued. Cannot create sign.")
+
         self.instrumentVar.set("Instrument: " + self.materialsList.instrument)
         self.proNumVar.set("Pro #: " + self.materialsList.proNum)
         self.serialNumVar.set("Serial #: " + self.materialsList.serialNum)
         self.chassisNumVar.set("Chassis #: " + str(self.materialsList.chassisNum))
         self.cellNumVar.set("Cell #: " + self.materialsList.cellNum)
 
-        # Only NovaSeq needs chassis number for instrument sign
-        if self.materialsList.chassisNum == "" and self.materialsList.materialNumber == "20013740":
-            tk.messagebox.showerror("Error", "Chassis not issued. Cannot create sign.")
-        else:
-            print("[INFO] Retrieved Instrument: {} from materials list.".format(self.materialsList.instrument))
-            print("[INFO] Retrieved Material number: {} from materials list.".format(self.materialsList.materialNumber))
-            print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))
-            print("[INFO] Retrieved Serial Num: {} from materials list.".format(self.materialsList.serialNum))
-            print("[INFO] Retrieved Chassis Num: {} from materials list.".format(self.materialsList.chassisNum))
-            print("[INFO] Calculated cell number: {}.".format(self.materialsList.cellNum))
-            print("\n")
+        print("[INFO] Retrieved Instrument: {} from materials list.".format(self.materialsList.instrument))
+        print("[INFO] Retrieved Material number: {} from materials list.".format(self.materialsList.materialNumber))
+        print("[INFO] Retrieved Pro Num: {} from materials list.".format(self.materialsList.proNum))
+        print("[INFO] Retrieved Serial Num: {} from materials list.".format(self.materialsList.serialNum))
+        print("[INFO] Retrieved Chassis Num: {} from materials list.".format(self.materialsList.chassisNum))
+        print("[INFO] Calculated cell number: {}.".format(self.materialsList.cellNum))
+        print("\n")
 
-            # Modify documents to print
-            if self.materialsList.materialNumber == "20013740" or self.materialsList.materialNumber == "20046751":
-                self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
-                                                        self.materialsList.chassisNum, self.materialsList.materialNumber)
-            elif self.materialsList.materialNumber == "15033616":
-                self.documentHandler.createMiSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum)
+        # Modify documents to print
+        if self.materialsList.materialNumber == "20013740" or self.materialsList.materialNumber == "20046751":
+            self.documentHandler.createNovaSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum, 
+                                                    self.materialsList.chassisNum, self.materialsList.materialNumber)
+        elif self.materialsList.materialNumber == "15033616":
+            self.documentHandler.createMiSeqInstrumentSignPDF(self.materialsList.proNum, self.materialsList.serialNum)
 
 
-            print("\n")
+        print("\n")
 
-            self.statusLabelTextVar.set("COMPLETE")
-            self.statusLabelText.configure(fg = "green")
+        self.statusLabelTextVar.set("COMPLETE")
+        self.statusLabelText.configure(fg = "green")
 
-            self.generatedDocuments = True
+        self.generatedDocuments = True
 
-            # tk.messagebox.showinfo("Info", "Documents ready to be printed.")
+        # tk.messagebox.showinfo("Info", "Documents ready to be printed.")
 
-            self.printUserChoices()
+        self.printUserChoices()
 
     def printUserChoices(self):
         if self.generatedDocuments:
